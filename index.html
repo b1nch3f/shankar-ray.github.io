@@ -11,7 +11,7 @@
 
   <body>
 
-    <div class="container">
+    <div class="container" id="mainContent">
       <!-- Main Content -->
       <div class="row">
       	<!-- Introduction -->
@@ -23,59 +23,129 @@
         </div>
 
         <div class="col-xs-12 col-sm-12 col-md-12">
-        	<div>
+        	<div class="well">
 	        	<p>
-	        		Call center conversations are recorded all the time, they say its for training purposes. In reality this domain makes extensive use of different analytics technologies.
+	        		Call center conversations are recorded all the time, they say its for training purposes. In reality this domain makes extensive use of different analysis technologies. <a href="http://ieeexplore.ieee.org/xpl/articleDetails.jsp?arnumber=6261805">The following IEEE paper emphasises it's importance.</a>
 	        	</p>
 
 	        	<p>
-	        		A simple google search would return several hundreds of results, the widespread use of call recordings to understand the demands of their customer. It's an interesting method to not only train the people joining customer support industry but also understanding the requirements of the customers.
-	        	</p>
-
-	        	<p>
-	        		<i>
-	        			Keeping this in mind, i found HP Idol OnDeman seems to be a good fit for performing sentiment analysis on the call records. The sentiment analysis API takes documents, texts as input and performs the sentiment analysis on that. It then returs the positive and negative sentiments. And also the aggregate sentiment and the score.
-	        		</i>
+	        		Recording telephonic conversations with clients/customers is an interesting method to not only train the interns joining customer support industry but also to understand customer's requirements.
 	        	</p>
 
 	        	<p>
 	        		<i>
-	        			In my sample application, i'd be using a sample mp3 file hosted publicly and performing sentiment analysis on that.
+	        			Keeping this in mind, i found HP Idol OnDemand to be a good fit for performing sentiment analysis on the call records. The sentiment analysis API takes documents, texts as input and performs the sentiment analysis. It then returns positive, negative and aggregate sentiments along with their respective scores.
 	        		</i>
 	        	</p>
 
 	        	<p>
-
+	        		Here, in this sample application, I used a sample mp3 file hosted publicly and performing sentiment analysis on that. This will be a series of API calls to Idol OnDemand platform. First, we'll extract the contents of the mp3 file. Then we'll pass it to the sentiment analysis API. We'll keep our goals minimalistic, because we'd be integrating our application with numerous third party APIs as well. Finally we'll share the sentiment analysis results through Email. We'd be sending the mail through Cloud-Elements which uses Sendgrid intrgration.
 	        	</p>
 	        	
+	        	<p>
+	        		<i>
+	        			Chat feature is an integral part of our application and we'll be using Pusher for the chatting. In addition to chatting, we've something called mood-analysis. So, for every ping that gets entered there is an instant call to the idol sentiment analysis API and the mood of the ping is metered and shown.
+	        		</i>
+	        	</p>
+
+	        	<p>
+	        		Please watch the provided video demos. It covers in great detail, how the application functions, the inspiration for the same and extensive code walkthrough and deployment
+	        	</p>
+
+	        	<p>
+	        		<i>
+	        			Everything being set, lets dive into the application internals
+	        		</i>
+	        	</p>
         	<div>
 
         </div>
-
-        <div class="col-xs-12 col-sm-12 col-md-12">
+        <div class="col-xs-12 col-sm-12 col-md-12 settingDetailsArea">
         	<h3><span class="label label-default">API Usage</span></h3>
-        	<div class="apiDescription">
-        		<div class="col-xs-12 col-sm-12 col-md-12 col-md-offset-.5">
-		        	<h4><span class="label label-default">HP Idol OnDemand</span></h4>
-		        	<p>idol on demand api usage description</p>
+        	<div class="row">
+        		<div class="col-xs-12 col-sm-12 col-md-12">
+        			<h4><span class="label label-default">HP Idol OnDemand</span></h4>
+        			<div class="well">
+			        	
+			        	<p>
+			        		HP Idol OnDemand APIs are the core part of our sample application. The mp3 file we are using for our demo is initially passed to the <span><a href="https://www.idolondemand.com/developer/apis/recognizespeech">Speech Recogtion API.</a></span>It makes an async call to the API.
+			        	</p>
+			        	<p>
+			        		<img src="speechRecogAsync.png" class="img-rounded" height="500" width="800">
+			        	</p>
+			        	<p>
+			        		After making the async call, we'll get the jobID. We'd use the jobID to check whether we're ready to receive the contents. Once the jobID status returns finished, we'll have the contents from the submitted file.
+			        	</p>
+			        	<p>
+			        		<img src="content.png" class="img-rounded" height="500" width="800">
+			        	</p>
+			        	<p>
+			        		Once we receive the json, we'll pull the content and place it in our UI through javascript. As we're using Bootstrap so it'll automatically give us a nice allignment.
+			        	</p>
+			        	<p>
+			        		<img src="transcript.png" class="img-rounded" height="500" width="800">
+			        	</p>
+			        	<p>
+			        		Next we'll pass this content to the Sentiment Analysis API to get the aggregate sentiment and score. Even though the response from Idol API is a json containing positive, negative and aggregate sentiments, since we'd be passing something out of here to our Cloud-Elements API, so i won't be focussing much on statistics. But the point is, if we can pass few simple things accross different APIs we'd literally be passing even bulkier things.
+			        	</p>
+			        	<p>
+			        		It's always nice to have some kind of visualization on our data. In this scenario, i believed D3.JS would be a good fit for this. So, we have the aggregate sentiment score displayed in terms of percentage in our chart.
+			        	</p>
+			        	<p>
+			        		<img src="chart.png" class="img-rounded" height="500" width="800">
+			        	</p>
+			        	<p>
+			        		Once we've some usefual data with us, the best thing we can do with it is to share it. Since, there are people who can use this data on-the-go and make use of this in an efficient way, we've various mechanisms to share it, e.g Email, SMS, Feeds, etc. In our case we'd be sending mails. We're using Cloud-Elements to send the mails. I'll be covering the API usage of Cloud-Elements in next section.
+			        	</p>
+			        	<p>
+			        		<img src="mail.png" class="img-rounded" height="500" width="800">
+			        	</p>
+			        	<p>
+			        		<i>
+			        			This brings us to an end of one vital section of our application and the description pertaining to it.
+			        			Next, we'll cover in more detail about Cloud-Elements API that we used to send mail and Chat functionality, Powered by Pusher.
+			        		</i>
+			        	</p>
+		        	</div>
 		        </div>
 
-		        <div class="col-xs-12 col-sm-12 col-md-12 col-md-offset-.5">
-		        	<h4><span class="label label-default">Pusher</span></h4>
-		        	<p>pusher api usage description</p>
-		        </div>
-
-		        <div class="col-xs-12 col-sm-12 col-md-12 col-md-offset-.5">
+		        <div class="col-xs-12 col-sm-12 col-md-12">
 		        	<h4><span class="label label-default">Cloud Elements</span></h4>
-		        	<p>cloud elements api usage description</p>
+		        	<div class="well">
+			        	<p>
+			        		We're using Cloud Elements to send e-mail. Once you sign up for cloud elemnts, using your Google credentials. The next step is to create a send grid account and provision it in cloud elements.
+			        	</p>
+			        	<p>
+			        		It'll then give us an authorization header to make our api calls and send mails. Please go through the provided video. It explains the functionalities of Cloud Elements in great detail. Due to lack of time i'd be skipping that here.
+			        	</p>
+		        	</div>
 		        </div>
+
+		        <div class="col-xs-12 col-sm-12 col-md-12">
+		        	<h4><span class="label label-default">Pusher</span></h4>
+		        	<div class="well">
+			        	<p>
+			        		Pusher powers our chat application. Basically, the front end captures the message typed in the input field and sends it to our Node server via a get request. Then our Node server triggers an event which reaches the pusher server.
+			        	</p>
+			        	<p>
+			        		The server returns the result in JSON format and our UI is hooked to that. Our UI is subscribed to the channel created in our Node backend and ready to receive the triggered events in the Node backend.
+			        	</p>
+			        	<p>
+			        		Pusher doesn't have any issues when the application is running in the cloud.<a href="https://floating-fjord-3615.herokuapp.com/#/welcome">In our case it's heroku and here's our application.</a>
+			        	</p>
+		        	</div>
+		        </div>
+
+		        <div class="col-xs-12 col-sm-12 col-md-12">
+		        	<h4 id="footer">
+		        	 Copyright © TopCoder Community. All Rights Reserved. Content by @sngrmkr.
+		        	</h4>
+		        </div>
+		        
         	</div>
         </div>
       </div>
-
     </div> <!-- /container -->
-
-
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
@@ -83,4 +153,9 @@
     <script src="bootstrap.min.js"></script>
   
 
-<style>.tb_button {padding:1px;cursor:pointer;border-right: 1px solid #8b8b8b;border-left: 1px solid #FFF;border-bottom: 1px solid #fff;}.tb_button.hover {borer:2px outset #def; background-color: #f8f8f8 !important;}.ws_toolbar {z-index:100000} .ws_toolbar .ws_tb_btn {cursor:pointer;border:1px solid #555;padding:3px}   .tb_highlight{background-color:yellow} .tb_hide {visibility:hidden} .ws_toolbar img {padding:2px;margin:0px} .apiDescription {margin-top: 35px;}</style></body></html>
+	<style>
+		.tb_button {padding:1px;cursor:pointer;border-right: 1px solid #8b8b8b;border-left: 1px solid #FFF;border-bottom: 1px solid #fff;}.tb_button.hover {borer:2px outset #def; background-color: #f8f8f8 !important;}.ws_toolbar {z-index:100000} .ws_toolbar .ws_tb_btn {cursor:pointer;border:1px solid #555;padding:3px}   .tb_highlight{background-color:yellow} .tb_hide {visibility:hidden} .ws_toolbar img {padding:2px;margin:0px} .apiDescription {margin-top: 35px;} .settingDetailsArea {margin-top: 20px} #footer {background-color:#575757; color: #ffffff; font-size: 85%; text-align: center; padding: .3em .6em .3em; } 
+
+	</style>
+
+</body></html>
